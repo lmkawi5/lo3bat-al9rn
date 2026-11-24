@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100b20">
+  <meta name="description" content="Emoji Secret — decode the message, create puzzles, and challenge friends.">
+  <title>Emoji Secret</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div><div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Emoji Secret home"><span class="brand-mark">🤫</span><span>EMOJI <b>SECRET</b></span></a>
+    <div class="top-actions">
+      <span class="points-pill">⭐ <span id="points">0</span></span>
+      <select id="language" aria-label="Language">
+        <option value="en">EN</option><option value="ar">عربي</option><option value="fr">FR</option>
+      </select>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero">
+      <div class="eyebrow" data-i18n="eyebrow">THE DAILY EMOJI CHALLENGE</div>
+      <h1 data-i18n="heroTitle">Crack the <span>secret</span>.</h1>
+      <p data-i18n="heroText">A few emojis. One hidden message. Can you decode it?</p>
+    </section>
+
+    <nav class="tabs" aria-label="Main navigation">
+      <button class="tab active" data-view="play" data-i18n="tabPlay">Play</button>
+      <button class="tab" data-view="create" data-i18n="tabCreate">Create</button>
+      <button class="tab" data-view="how" data-i18n="tabHow">How to play</button>
+    </nav>
+
+    <section id="playView" class="view">
+      <div class="section-heading">
+        <div><span class="eyebrow" data-i18n="dailyLabel">TODAY'S PUZZLE</span><h2 data-i18n="dailyTitle">Daily Secret</h2></div>
+        <span class="level-chip" id="puzzleNumber">#001</span>
+      </div>
+      <article class="game-card">
+        <div class="card-top"><span class="live-dot"></span><span data-i18n="unsolved">Ready to solve?</span><span class="difficulty" data-i18n="easy">EASY</span></div>
+        <div class="emoji-line" id="emojiLine" aria-label="Puzzle emojis">🌧️ ☕ 📖</div>
+        <p class="prompt" data-i18n="prompt">What is the hidden phrase?</p>
+        <form id="answerForm" class="answer-form">
+          <input id="answerInput" autocomplete="off" maxlength="80" placeholder="Type your guess..." aria-label="Your answer">
+          <button class="primary-btn" type="submit" data-i18n="check">Check answer</button>
+        </form>
+        <div class="feedback" id="feedback" aria-live="polite"></div>
+        <div class="game-tools">
+          <button class="soft-btn" id="hintBtn">💡 <span data-i18n="hint">Hint</span></button>
+          <button class="soft-btn" id="revealBtn">👀 <span data-i18n="reveal">Reveal</span></button>
+          <button class="soft-btn" id="shareDailyBtn">↗ <span data-i18n="share">Share</span></button>
+        </div>
+        <p class="hint-text" id="hintText"></p>
+      </article>
+      <div class="stats-grid">
+        <div class="stat-card"><span>🔥</span><strong id="streak">0</strong><small data-i18n="streak">Day streak</small></div>
+        <div class="stat-card"><span>🧩</span><strong id="solved">0</strong><small data-i18n="solved">Solved</small></div>
+        <div class="stat-card"><span>🏆</span><strong id="best">0</strong><small data-i18n="best">Best score</small></div>
+      </div>
+    </section>
+
+    <section id="createView" class="view hidden">
+      <div class="section-heading"><div><span class="eyebrow" data-i18n="creatorLabel">MAKE YOUR OWN</span><h2 data-i18n="creatorTitle">Create a secret</h2></div><span class="level-chip">✨</span></div>
+      <article class="game-card creator-card">
+        <label for="creatorEmoji" data-i18n="emojiLabel">Your emoji clue</label>
+        <input id="creatorEmoji" class="creator-input emoji-input" maxlength="80" placeholder="🌙 ❤️ 🎵">
+        <label for="creatorAnswer" data-i18n="answerLabel">Secret answer</label>
+        <input id="creatorAnswer" class="creator-input" maxlength="80" placeholder="e.g. Love song">
+        <label for="creatorHint" data-i18n="hintLabel">Optional hint</label>
+        <input id="creatorHint" class="creator-input" maxlength="100" placeholder="A little clue...">
+        <button id="createShareBtn" class="primary-btn full-btn" data-i18n="createShare">Create & share challenge</button>
+        <div class="feedback" id="createFeedback" aria-live="polite"></div>
+      </article>
+      <div class="notice" data-i18n="privacyNote">Your custom puzzle is prepared on this device. Sharing creates a link; no account is needed.</div>
+    </section>
+
+    <section id="howView" class="view hidden">
+      <div class="section-heading"><div><span class="eyebrow" data-i18n="guideLabel">QUICK GUIDE</span><h2 data-i18n="guideTitle">How it works</h2></div><span class="level-chip">?</span></div>
+      <div class="guide-list">
+        <div class="guide-item"><span>1</span><div><b data-i18n="guide1Title">Read the emojis</b><p data-i18n="guide1Text">Combine the emojis to discover a phrase, title, or expression.</p></div></div>
+        <div class="guide-item"><span>2</span><div><b data-i18n="guide2Title">Type your guess</b><p data-i18n="guide2Text">Submit your answer. Use a hint if you get stuck.</p></div></div>
+        <div class="guide-item"><span>3</span><div><b data-i18n="guide3Title">Challenge friends</b><p data-i18n="guide3Text">Create your own puzzle and share its link with friends.</p></div></div>
+      </div>
+      <button id="backToPlay" class="primary-btn full-btn" data-i18n="startPlaying">Start playing</button>
+    </section>
+
+    <footer><span>EMOJI SECRET</span><span data-i18n="footer">A tiny puzzle. A big secret.</span></footer>
+  </main>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
