@@ -1,0 +1,15 @@
+/* Emoji Secret - Stage 4 friends UI (new fr-* classes only; reuses existing buttons, chips and modal). */
+.fr-btn{position:relative}
+.fr-tabs{margin-bottom:12px}
+.fr-list{display:grid;gap:8px}
+.fr-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#1b1430;border:1px solid #34264e;border-radius:14px;padding:10px 12px}
+.fr-who{display:flex;align-items:center;gap:10px;min-width:0;flex:1;background:none;border:0;padding:0;color:var(--text);font:inherit;text-align:start;cursor:pointer}
+.fr-name{min-width:0;display:grid}
+.fr-name strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr-name small{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr-acts{display:flex;gap:6px;flex:none;flex-wrap:wrap;justify-content:flex-end}
+.fr-acts .primary-btn,.fr-acts .soft-btn{flex:none;padding:8px 11px;font-size:12px}
+.fr-x{padding:8px 11px}
+.fr-input{width:100%;background:#110d20;border:1px solid #47345f;border-radius:12px;color:white;padding:14px 15px;font:500 14px inherit;outline:none}
+.fr-input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #a78bfa20}
+@media(max-width:420px){.fr-row{flex-wrap:wrap}.fr-acts{width:100%;justify-content:flex-start}}
