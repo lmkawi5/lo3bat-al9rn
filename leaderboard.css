@@ -1,0 +1,24 @@
+/* Emoji Secret - Stage 3D leaderboard UI. Only NEW classes (lb-*); reuses existing variables, chips, cards
+   and buttons. The only existing rule touched is the tab bar width/padding, scoped to .cm-tabs5, so that a
+   5th tab fits (loaded after community.css so it takes precedence). */
+.tabs.cm-tabs5{max-width:640px}
+@media(max-width:560px){.tabs.cm-tabs5 .tab{padding:12px 2px;font-size:11px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+
+.lb-refresh{flex:none;padding:9px 12px;font-size:15px}
+.lb-note{margin:0 0 12px;text-align:center;color:var(--muted);font-size:12px;line-height:1.5}
+.lb-login{width:100%;margin-bottom:12px}
+.lb-me{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(120deg,#3a2468,#5b2f86);border:1px solid #8055dc;border-radius:14px;padding:12px 14px;font-size:13px;margin-bottom:12px}
+.lb-me strong{font-size:20px}
+.lb-list{display:grid;gap:8px}
+.lb-row{display:flex;align-items:center;gap:10px;width:100%;text-align:start;background:#1b1430;border:1px solid #34264e;border-radius:14px;padding:10px 12px;color:var(--text);font:inherit;cursor:pointer}
+.lb-row:active{transform:scale(.99)}
+.lb-row.me{border-color:#8055dc;background:#251a40}
+.lb-row.top1{box-shadow:0 0 0 1px #e6c35c66}
+.lb-row.top2{box-shadow:0 0 0 1px #c0c7d666}
+.lb-row.top3{box-shadow:0 0 0 1px #cd8f5a66}
+.lb-rank{width:34px;flex:none;text-align:center;font-weight:800;font-size:15px;color:#d8c7ff}
+.lb-who{min-width:0;flex:1;display:grid}
+.lb-who strong{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-who small{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lb-pts{flex:none;text-align:end;font-weight:800;font-size:16px;display:grid}
+.lb-pts small{color:var(--muted);font-size:10px;font-weight:600}
