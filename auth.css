@@ -1,0 +1,33 @@
+/* Emoji Secret - Stage 2 account UI. Only NEW classes (acct-*); reuses existing variables and
+   button/input/card classes so it matches the current purple design. Nothing existing is overridden. */
+.acct-btn{display:flex;align-items:center;gap:8px;background:#211832;border:1px solid var(--line);border-radius:12px;color:var(--text);padding:9px 12px;font:700 13px inherit;cursor:pointer;max-width:160px}
+.acct-btn:active{transform:scale(.97)}
+.acct-btn .acct-mini{width:20px;height:20px;border-radius:50%;overflow:hidden;flex:none;display:grid;place-items:center;background:linear-gradient(135deg,#8b5cf6,#d946ef);font-size:11px;font-weight:800;color:#fff}
+.acct-btn .acct-mini img{width:100%;height:100%;object-fit:cover;display:block}
+.acct-btn .acct-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.acct-overlay{position:fixed;inset:0;z-index:40;background:rgba(10,6,20,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:grid;place-items:center;padding:16px;overflow-y:auto}
+.acct-card{width:100%;max-width:440px;position:relative;max-height:94vh;overflow-y:auto;display:grid;gap:14px}
+.acct-close{position:absolute;top:12px;inset-inline-end:12px;width:32px;height:32px;border-radius:10px;border:1px solid #493660;background:#2a2040;color:#e5dafa;font:700 14px inherit;cursor:pointer}
+.acct-title{margin:0;font-size:22px;text-align:center}
+.acct-sub{margin:0;text-align:center;color:var(--muted);font-size:13px;line-height:1.5}
+.acct-form{margin:0}
+.acct-form .creator-input{direction:ltr}
+.acct-form textarea.creator-input{direction:inherit;resize:none;min-height:84px;font-family:inherit}
+.acct-form .acct-text{direction:inherit}
+.acct-chips{justify-content:center;margin:0}
+.acct-avatar{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#d946ef);display:grid;place-items:center;font:800 34px inherit;color:#fff;overflow:hidden;margin:0 auto;border:2px solid #59447f}
+.acct-avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.acct-who{text-align:center;display:grid;gap:4px}
+.acct-who strong{font-size:20px}
+.acct-who small{color:var(--muted);font-size:12px;direction:ltr}
+.acct-who p{margin:6px 0 0;color:#c9bfda;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.acct-stats{margin-top:0}
+.acct-code{font:800 21px/1.4 ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;text-align:center;background:#110d20;border:1px dashed var(--purple);border-radius:12px;padding:16px;user-select:all;-webkit-user-select:all;direction:ltr;word-break:break-all}
+.acct-check{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:#c8bbdf;line-height:1.5;cursor:pointer}
+.acct-check input{margin-top:3px;accent-color:#8b5cf6}
+.acct-link{background:none;border:0;color:#c9a9ff;font:600 12px inherit;cursor:pointer;text-align:center;padding:4px}
+.acct-row{display:flex;gap:9px}
+.acct-row .soft-btn{flex:1}
+.acct-card .primary-btn:disabled{opacity:.55;cursor:default}
+@media(max-width:560px){.acct-btn .acct-name{display:none}.acct-btn{padding:9px 10px}.acct-card{padding:18px}.acct-code{font-size:17px;letter-spacing:1px}.acct-stats{grid-template-columns:repeat(2,1fr)}}
