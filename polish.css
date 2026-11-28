@@ -1,0 +1,65 @@
+/* Emoji Secret - Stage 8, step 1: design foundation.
+   Shared spacing / radius / type / shadow values built from the existing purple palette (no new colors).
+   Loaded LAST so it only unifies what already exists; nothing here changes logic or colors. */
+:root{
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;
+  --r-sm:12px;--r-md:16px;--r-lg:22px;
+  --fs-xs:11px;--fs-sm:13px;--fs-md:15px;--fs-lg:20px;
+  --sh-1:0 6px 18px #0000002e;--sh-2:0 18px 50px #00000040;
+  --glow:0 0 0 1px #a78bfa40,0 14px 44px #8b5cf62e;
+  --tap:44px;
+}
+/* card hierarchy: the puzzle card is the hero, everything else sits quieter behind it */
+.game-card{border-radius:var(--r-lg);box-shadow:var(--glow)}
+.stat-card,.guide-item,.st-item,.st-rules,.st-panel,.lb-row{border-radius:var(--r-md)}
+.stat-card,.guide-item,.st-item,.st-rules,.lb-row{box-shadow:var(--sh-1)}
+.stats-grid{gap:var(--sp-3);margin-top:var(--sp-4)}
+.stat-card{padding:var(--sp-4) var(--sp-2)}
+.stat-card strong{font-size:var(--fs-lg);line-height:1.1}
+.stat-card small{font-size:var(--fs-xs);letter-spacing:.3px}
+/* consistent section headings */
+.section-heading{margin-bottom:var(--sp-4)}
+.section-heading h2{font-size:var(--fs-lg);line-height:1.25}
+.eyebrow{font-size:var(--fs-xs)}
+/* button system: primary / secondary / quiet, one touch height and one corner radius */
+.primary-btn,.soft-btn,.chip,.tab{min-height:var(--tap);border-radius:var(--r-sm)}
+.chip{display:inline-flex;align-items:center;border-radius:999px}
+.soft-btn{font-size:var(--fs-sm);padding:var(--sp-3) var(--sp-2);transition:transform .15s,background .15s,border-color .15s}
+.soft-btn:hover{background:#33264f;border-color:#5d4580}
+.primary-btn{font-size:var(--fs-sm);padding:var(--sp-3) var(--sp-4)}
+.primary-btn:hover{filter:brightness(1.07)}
+.game-tools{gap:var(--sp-2);margin-top:var(--sp-4)}
+.answer-form input{min-height:var(--tap);border-radius:var(--r-sm)}
+/* keyboard focus is always visible */
+.primary-btn:focus-visible,.soft-btn:focus-visible,.chip:focus-visible,.tab:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+/* rhythm on phones */
+@media(max-width:560px){
+  .shell{padding:var(--sp-5) var(--sp-4) var(--sp-4)}
+  .game-card{padding:var(--sp-4)}
+  .stats-grid{gap:var(--sp-2)}
+  .stat-card{padding:var(--sp-3) var(--sp-1)}
+}
+/* Arabic reads better with a little more line height */
+[dir=rtl] .qtext,[dir=rtl] .hero p,[dir=rtl] .guide-item p,[dir=rtl] .notice{line-height:1.8}
+[dir=rtl] .soft-btn,[dir=rtl] .primary-btn,[dir=rtl] .tab{line-height:1.4}
+
+/* ---- Stage 8: yellow action buttons (contrast against the purple UI) ----
+   Primary actions = solid yellow with dark purple text (contrast ~12:1).
+   In-game action row (Hint / Reveal / Next / Share / Helps / Store) = dark chip, yellow border + yellow text (~9:1).
+   Navigation tabs, category chips and the purple theme stay purple. */
+:root{--yellow:#facc15;--yellow2:#fbbf24;--on-yellow:#1f1235}
+.primary-btn{background:linear-gradient(180deg,#fde047,var(--yellow2));color:var(--on-yellow);font-weight:800;box-shadow:0 6px 18px #facc1533,inset 0 -2px 0 #0000001f}
+.primary-btn:hover{filter:brightness(1.05)}
+.primary-btn:disabled{filter:grayscale(.35);opacity:.55}
+.primary-btn:focus-visible,.game-tools .soft-btn:focus-visible{outline-color:#fff}
+.game-tools .soft-btn,.st-main .soft-btn{background:#241a3d;border:1.5px solid #facc1599;color:var(--yellow);font-weight:700}
+.game-tools .soft-btn:hover,.st-main .soft-btn:hover{background:#facc1519;border-color:var(--yellow)}
+.game-tools .soft-btn:disabled{opacity:.5;border-color:#facc1544}
+/* Store / Helps panels: buy and use buttons are primary (yellow); secondary stay purple */
+
+/* ---- six navigation tabs (3x2 grid): yellow with dark text ----
+   Active tab = deeper amber + white ring so the current section is still obvious. */
+.tabs .tab{background:linear-gradient(180deg,#fde047,var(--yellow));color:var(--on-yellow);font-weight:800;border:0;box-shadow:inset 0 -2px 0 #0000001f,0 3px 10px #0000002e}
+.tabs .tab:hover{filter:brightness(1.05)}
+.tabs .tab.active{background:linear-gradient(180deg,#fbbf24,#f59e0b);color:var(--on-yellow);box-shadow:0 0 0 2px #fff,0 6px 20px #f59e0b66,inset 0 -2px 0 #0000002e}
+.tabs .tab:focus-visible{outline:2px solid #fff;outline-offset:2px}
