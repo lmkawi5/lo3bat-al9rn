@@ -108,12 +108,14 @@
   function row(it, me) {
     var name = it.display_name || it.username, rank = Number(it.rank) || 0;
     var medal = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : String(rank);
+    var ST = window.ESStore, bd = ST ? ST.badge(it.equipped_badge) : "", fx = ST ? ST.frameClass(it.equipped_frame) : "";
+    var av = U.avatar(it.avatar_url, name); if (fx) av.classList.add(fx);
     var sub = "@" + it.username + (it.wins_count != null ? " · 🏆 " + it.wins_count : "");
     return h("button", { class: "lb-row" + (me && it.profile_id === me.id ? " me" : "") + (rank >= 1 && rank <= 3 ? " top" + rank : ""),
       type: "button", onclick: function () { openProfile(it.username); } },
       h("span", { class: "lb-rank" }, medal),
-      U.avatar(it.avatar_url, name),
-      h("span", { class: "lb-who" }, h("strong", null, name), h("small", null, sub)),
+      av,
+      h("span", { class: "lb-who" }, h("strong", null, (bd ? bd + " " : "") + name), h("small", null, sub)),
       h("span", { class: "lb-pts" }, fmt(it.points), h("small", null, t("pts"))));
   }
 
