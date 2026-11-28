@@ -1,4 +1,4 @@
-const CACHE="emoji-secret-v15";
+const CACHE="emoji-secret-v16";
 const ASSETS=["./","./index.html","./style.css","./app.js","./manifest.json","./icon.svg","./auth.css","./config.js","./auth-api.js","./auth-ui.js","./community.css","./community.js","./social.js","./friends.css","./friends.js","./avatar.css","./avatar-art.js","./avatar-creator.js","./store.css","./store.js","./leaderboard.css","./leaderboard.js"];
 self.addEventListener("install",e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));

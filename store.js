@@ -10,7 +10,7 @@
   /* ---------------- translations ---------------- */
   var S = {
     en: {
-      title: "Store", btnAria: "Store", mainStore: "Store", mainNoHelp: "No hints available for this puzzle.", dpName: "Double Points", dpHow: "Your next win gives double points.", dpBuy: "Buy · {p} 🪙", dpOwned: "Activate ({n})", mainDouble: "⚡×2 Double Points!", coins: "coins", tHelps: "Hints & boosts", tStyle: "Style", tMine: "My items",
+      title: "Store", tab: "Store", eyebrow: "STORE", btnAria: "Store", mainStore: "Store", mainNoHelp: "No hints available for this puzzle.", dpName: "Double Points", dpHow: "Your next win gives double points.", dpBuy: "Buy · {p} 🪙", dpOwned: "Activate ({n})", mainDouble: "⚡×2 Double Points!", coins: "coins", tHelps: "Hints & boosts", tStyle: "Style", tMine: "My items",
       rulesTitle: "How it works",
       r1: "Items are bought with coins you earn by solving and publishing puzzles. No real money, ever.",
       r2: "Hints never change your reward. Revealing the answer means that puzzle gives you no reward.",
@@ -37,7 +37,7 @@
       err_server: "Something went wrong. Please try again.", err_invalid_session: "Your session expired. Please log in again."
     },
     ar: {
-      title: "المتجر", btnAria: "المتجر", mainStore: "المتجر", mainNoHelp: "لا توجد تلميحات متاحة لهذا اللغز.", dpName: "نقاط مضاعفة", dpHow: "فوزك القادم يمنح نقاطاً مضاعفة.", dpBuy: "شراء · {p} 🪙", dpOwned: "تشغيل ({n})", mainDouble: "⚡×2 نقاط مضاعفة!", coins: "عملة", tHelps: "تلميحات ودعم", tStyle: "الشكل", tMine: "أغراضي",
+      title: "المتجر", tab: "المتجر", eyebrow: "المتجر", btnAria: "المتجر", mainStore: "المتجر", mainNoHelp: "لا توجد تلميحات متاحة لهذا اللغز.", dpName: "نقاط مضاعفة", dpHow: "فوزك القادم يمنح نقاطاً مضاعفة.", dpBuy: "شراء · {p} 🪙", dpOwned: "تشغيل ({n})", mainDouble: "⚡×2 نقاط مضاعفة!", coins: "عملة", tHelps: "تلميحات ودعم", tStyle: "الشكل", tMine: "أغراضي",
       rulesTitle: "كيف يعمل؟",
       r1: "تُشترى الأغراض بالعملات التي تكسبها من حل الألغاز ونشرها. لا مال حقيقي أبداً.",
       r2: "التلميحات لا تغيّر مكافأتك. أما إظهار الجواب فيعني أن اللغز لن يمنحك أي مكافأة.",
@@ -64,7 +64,7 @@
       err_server: "حدث خطأ. حاول مرة أخرى.", err_invalid_session: "انتهت الجلسة. يرجى تسجيل الدخول مرة أخرى."
     },
     fr: {
-      title: "Boutique", btnAria: "Boutique", mainStore: "Boutique", mainNoHelp: "Aucun indice disponible pour cette énigme.", dpName: "Points doublés", dpHow: "Votre prochaine victoire donne le double de points.", dpBuy: "Acheter · {p} 🪙", dpOwned: "Activer ({n})", mainDouble: "⚡×2 Points doublés !", coins: "pièces", tHelps: "Indices & boosts", tStyle: "Style", tMine: "Mes objets",
+      title: "Boutique", tab: "Boutique", eyebrow: "BOUTIQUE", btnAria: "Boutique", mainStore: "Boutique", mainNoHelp: "Aucun indice disponible pour cette énigme.", dpName: "Points doublés", dpHow: "Votre prochaine victoire donne le double de points.", dpBuy: "Acheter · {p} 🪙", dpOwned: "Activer ({n})", mainDouble: "⚡×2 Points doublés !", coins: "pièces", tHelps: "Indices & boosts", tStyle: "Style", tMine: "Mes objets",
       rulesTitle: "Comment ça marche",
       r1: "Les objets s'achètent avec les pièces gagnées en résolvant et publiant des énigmes. Jamais d'argent réel.",
       r2: "Les indices ne changent pas votre récompense. Révéler la réponse supprime la récompense de cette énigme.",
@@ -150,16 +150,14 @@
   }
   function fail(r) { U.toast(err(r.error)); }
 
-  /* ---------------- store modal ---------------- */
-  var overlay = null, body = null, tab = "helps", data = null, busy = false;
-  var btn = h("button", { class: "soft-btn sc-bell st-btn", type: "button", onclick: function () { open("helps"); } }, "🛍️");
+  /* ---------------- store section (a real tab next to Play / Create / Community / Ranking / How to play) ---------------- */
+  var view = h("section", { id: "storeView", class: "view hidden" });
+  var tabBtn = null, tabLabel = null;
+  var tab = "helps", data = null, busy = false;
+  function visible() { return !view.classList.contains("hidden"); }
+  var btn = h("button", { class: "soft-btn sc-bell st-btn", type: "button", onclick: function () { open("helps"); } }, "🛒");
   function paintBtn() { btn.setAttribute("aria-label", t("btnAria")); btn.title = t("btnAria"); }
 
-  function closeM() {
-    if (overlay) { overlay.remove(); overlay = null; }
-    if (!document.querySelector(".acct-overlay")) document.body.style.overflow = "";
-  }
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && overlay) closeM(); });
 
   function loadStore(cb) {
     rpc("get_store", {}).then(function (r) {
@@ -172,7 +170,7 @@
   function applyProfile(p) { if (p) { A.setProfile(p); if (data) data.coins = p.coins; } }
 
   function doBuy(it) {
-    if (!A.isLoggedIn()) { closeM(); A.open("login"); return; }
+    if (!A.isLoggedIn()) { A.open("login"); return; }
     if (busy) return;
     if (it.price >= 100 && !window.confirm(t("buyAsk", { n: iname(it), p: it.price }))) return;
     busy = true;
@@ -207,7 +205,7 @@
     var actions = [];
     var stock = it.stackable ? h("small", { class: "st-stock" }, t("inStock", { n: it.quantity })) : null;
     if (it.type === "avatar" && it.owned) {
-      actions.push(h("button", { class: "soft-btn", type: "button", onclick: function () { closeM(); if (window.ESAvatarCreator) window.ESAvatarCreator.open(); } }, "🎨 " + t("openCreator")));
+      actions.push(h("button", { class: "soft-btn", type: "button", onclick: function () { if (window.ESAvatarCreator) window.ESAvatarCreator.open(); } }, "🎨 " + t("openCreator")));
     } else if (mode === "shop") {
       if (it.stackable) actions.push(h("button", { class: "primary-btn st-buy", type: "button", onclick: function () { doBuy(it); } }, t("buy") + " · " + it.price + " 🪙"));
       else if (it.owned) actions.push(isEquipped(it)
@@ -231,7 +229,7 @@
   }
 
   function render() {
-    if (!overlay || !body) return;
+    if (!visible()) return;
     var head = h("div", { class: "st-balance" }, h("span", null, t("yourCoins")), h("strong", null, "🪙 " + coins()));
     var tabs = h("div", { class: "chips cm-chips st-tabs" }, [["helps", t("tHelps")], ["style", t("tStyle")], ["mine", t("tMine")]].map(function (x) {
       return h("button", { class: "chip" + (tab === x[0] ? " on" : ""), type: "button", onclick: function () { tab = x[0]; render(); } }, x[1]);
@@ -258,23 +256,19 @@
               mineStyle.length ? h("div", { class: "st-list" }, mineStyle.map(function (i) { return itemCard(i, "mine"); })) : null);
       }
       if (!A.isLoggedIn()) pane = h("div", { class: "sc-body" }, h("div", { class: "cm-note st-login" }, t("needLogin"),
-        h("button", { class: "soft-btn", type: "button", onclick: function () { closeM(); A.open("login"); } }, t("loginBtn"))), pane);
+        h("button", { class: "soft-btn", type: "button", onclick: function () { A.open("login"); } }, t("loginBtn"))), pane);
     }
-    body.replaceChildren(head, tabs, pane);
+    view.replaceChildren(
+      h("div", { class: "section-heading" }, h("div", null, h("span", { class: "eyebrow" }, t("eyebrow")), h("h2", null, "🛒 " + t("title")))),
+      head, tabs, pane);
   }
 
+  // Any shortcut (🛒 buttons) just selects the Store tab; the tab click handler below shows the section.
   function open(which) {
-    tab = which || "helps"; closeM(); data = null; busy = false;
-    body = h("div", { class: "sc-body" });
-    overlay = h("div", { class: "acct-overlay", role: "dialog", "aria-modal": "true", "aria-label": t("title"),
-      onclick: function (e) { if (e.target === overlay) closeM(); } },
-      h("div", { class: "game-card acct-card" },
-        h("button", { class: "acct-close", type: "button", "aria-label": "✕", onclick: closeM }, "✕"),
-        h("h2", { class: "acct-title" }, "🛍️ " + t("title")), body));
-    document.body.appendChild(overlay);
-    document.body.style.overflow = "hidden";
-    render(); loadStore(render);
+    if (which) tab = which;
+    if (tabBtn) tabBtn.click();
   }
+  function showStore() { busy = false; render(); loadStore(render); }
 
   /* ---------------- in-puzzle "Helps" panel (used by community.js) ---------------- */
   // it = the puzzle object of the feed card. Returns a node, or null when helps do not apply.
@@ -401,7 +395,7 @@
 
   function paintMain() {
     if (!mainBox) return;
-    mainBtn.replaceChildren("🛍️ " + t("mainStore")); mainToggle.replaceChildren("🧰 " + t("helps"));
+    mainBtn.replaceChildren("🛒 " + t("mainStore")); mainToggle.replaceChildren("🧰 " + t("helps"));
     if (!mainOpen) return;
     if (!A.isLoggedIn()) {
       mainPanel.replaceChildren(h("div", { class: "cm-note st-login" }, t("needLogin"),
@@ -466,12 +460,38 @@
 
   /* ---------------- wiring ---------------- */
   var langSel = document.getElementById("language");
-  if (langSel) langSel.addEventListener("change", function () { paintBtn(); paintMain(); if (overlay) render(); });
+  if (langSel) langSel.addEventListener("change", function () { paintBtn(); paintMain(); paintStatic(); if (visible()) render(); });
   var lastId = A.isLoggedIn() && A.getProfile() ? A.getProfile().id : null;
   document.addEventListener("emojisecret:auth", function () {
     var id = A.isLoggedIn() && A.getProfile() ? A.getProfile().id : null;
-    if (id !== lastId) { lastId = id; data = null; if (overlay) { render(); loadStore(render); } loadMain(); }
+    if (id !== lastId) { lastId = id; data = null; if (visible()) { render(); loadStore(render); } loadMain(); }
   });
+  function paintStatic() { if (tabLabel) tabLabel.textContent = t("tab"); }
+  (function initTab() {
+    var tabs = document.querySelector(".tabs");
+    if (!tabs) return;
+    var how = tabs.querySelector('[data-view="how"]');
+    tabLabel = h("span", { class: "cm-tablabel" });
+    tabBtn = h("button", { class: "tab", "data-view": "store", type: "button" }, tabLabel);
+    tabs.insertBefore(tabBtn, how || null);                       // ... Community, Ranking, Store, How to play
+    tabs.classList.remove("cm-tabs4", "cm-tabs5"); tabs.classList.add("cm-tabs6");   // 3 x 2 grid (store.css)
+    var anchor = document.getElementById("leaderboardView") || document.getElementById("communityView") || document.getElementById("howView");
+    if (anchor) anchor.after(view); else document.querySelector("main.shell").appendChild(view);
+    document.querySelectorAll(".tab").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var isStore = b.dataset.view === "store";
+        if (isStore) {
+          if (typeof setView === "function") setView("store");   // app.js hides its own sections for an unknown view
+          ["communityView", "leaderboardView"].forEach(function (id) { var e = document.getElementById(id); if (e) e.classList.add("hidden"); });
+        }
+        view.classList.toggle("hidden", !isStore);
+        if (isStore) showStore();
+      });
+    });
+    var bp = document.getElementById("backToPlay");
+    if (bp) bp.addEventListener("click", function () { view.classList.add("hidden"); });
+  })();
+  paintStatic();
   paintBtn();
   initMain();
   window.ESStore = { open: open, button: function () { return btn; }, helps: helps, frameClass: frameClass, badge: badgeIcon, title: titleText };

@@ -41,3 +41,9 @@
 .fx-frame_pink_glow{box-shadow:0 0 0 2px #f472b6,0 0 14px #f472b6aa}
 .fx-frame_emerald{box-shadow:0 0 0 2px #34d399,0 0 12px #34d39988}
 .fx-frame_golden{box-shadow:0 0 0 2px #facc15,0 0 14px #facc1599}
+
+/* Tab bar: 3 x 2 grid so six sections fit on phones in EN / AR / FR (same pill, colours, fonts and active style).
+   store.js removes .cm-tabs4/.cm-tabs5 and adds .cm-tabs6; the original .tabs / .tab / .tab.active rules are untouched. */
+.tabs.cm-tabs6{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:430px}
+.tabs.cm-tabs6 .tab{min-width:0;padding:12px 6px;font-size:13px;white-space:normal;line-height:1.25;overflow:visible}
+@media(max-width:560px){.tabs.cm-tabs6 .tab{padding:12px 4px;font-size:13px}}
