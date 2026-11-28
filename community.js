@@ -153,6 +153,7 @@
   }
   function avatar(url, name) {
     var e = h("span", { class: "cm-av" }), u = safeUrl(url);
+    if (window.ESAvatarArt && window.ESAvatarArt.isCode(url)) { e.append(window.ESAvatarArt.render(url)); return e; }   // Stage 6 creator avatar
     if (u) {
       var img = h("img", { src: u, alt: "" });
       img.addEventListener("error", function () { e.replaceChildren(); e.textContent = ini(name); });

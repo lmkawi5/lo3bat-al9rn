@@ -76,7 +76,8 @@
     var p = r.profile, name = p.display_name || p.username;
     var av = h("div", { class: "acct-avatar" });
     var url = U.safeUrl(p.avatar_url);
-    if (url) {
+    if (window.ESAvatarArt && window.ESAvatarArt.isCode(p.avatar_url)) av.append(window.ESAvatarArt.render(p.avatar_url));
+    else if (url) {
       var img = h("img", { src: url, alt: "" });
       img.addEventListener("error", function () { av.replaceChildren(); av.textContent = U.ini(name); });
       av.append(img);

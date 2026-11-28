@@ -24,7 +24,7 @@
       savedConfirm: "I saved my recovery code", mustSave: "Please save your recovery code first.", continue: "Continue",
       points: "Points", coins: "Coins", wins: "Wins", created: "Created",
       saved: "Profile saved ✓", pwChanged: "Password changed ✓", pwMismatch: "Passwords do not match.",
-      chooseAvatar: "Choose photo", removeAvatar: "Remove photo", wait: "Please wait…", signedOut: "Signed out",
+      createAvatar: "Create avatar", chooseAvatar: "Choose photo", removeAvatar: "Remove photo", wait: "Please wait…", signedOut: "Signed out",
       err_invalid_username: "Username must be 3–20 letters, numbers or _.",
       err_weak_password: "Password must be at least 8 characters.",
       err_username_taken: "That username is already taken.",
@@ -54,7 +54,7 @@
       savedConfirm: "لقد حفظت رمز الاسترداد", mustSave: "يرجى حفظ رمز الاسترداد أولاً.", continue: "متابعة",
       points: "النقاط", coins: "العملات", wins: "الانتصارات", created: "ألغازي",
       saved: "تم حفظ الملف ✓", pwChanged: "تم تغيير كلمة المرور ✓", pwMismatch: "كلمتا المرور غير متطابقتين.",
-      chooseAvatar: "اختر صورة", removeAvatar: "إزالة الصورة", wait: "يرجى الانتظار…", signedOut: "تم تسجيل الخروج",
+      createAvatar: "إنشاء صورة رمزية", chooseAvatar: "اختر صورة", removeAvatar: "إزالة الصورة", wait: "يرجى الانتظار…", signedOut: "تم تسجيل الخروج",
       err_invalid_username: "اسم المستخدم من 3 إلى 20 حرفاً أو رقماً أو _.",
       err_weak_password: "يجب ألا تقل كلمة المرور عن 8 أحرف.",
       err_username_taken: "اسم المستخدم مستخدم بالفعل.",
@@ -84,7 +84,7 @@
       savedConfirm: "J'ai enregistré mon code de récupération", mustSave: "Veuillez d'abord enregistrer votre code.", continue: "Continuer",
       points: "Points", coins: "Pièces", wins: "Victoires", created: "Créées",
       saved: "Profil enregistré ✓", pwChanged: "Mot de passe modifié ✓", pwMismatch: "Les mots de passe ne correspondent pas.",
-      chooseAvatar: "Choisir une photo", removeAvatar: "Retirer la photo", wait: "Veuillez patienter…", signedOut: "Déconnecté",
+      createAvatar: "Créer un avatar", chooseAvatar: "Choisir une photo", removeAvatar: "Retirer la photo", wait: "Veuillez patienter…", signedOut: "Déconnecté",
       err_invalid_username: "Le pseudo doit contenir 3 à 20 lettres, chiffres ou _.",
       err_weak_password: "Le mot de passe doit contenir au moins 8 caractères.",
       err_username_taken: "Ce pseudo est déjà pris.",
@@ -131,7 +131,8 @@
   function initial(p) { var n = (p && (p.display_name || p.username)) || "?"; return (Array.from(n.trim())[0] || "?").toUpperCase(); }
   function setAvatar(el, url, p) {
     el.replaceChildren();
-    if (url) {
+    if (window.ESAvatarArt && window.ESAvatarArt.isCode(url)) el.append(window.ESAvatarArt.render(url));
+    else if (url) {
       var img = h("img", { src: url, alt: "" });
       img.addEventListener("error", function () { el.replaceChildren(); el.textContent = initial(p); });
       el.append(img);
@@ -257,6 +258,7 @@
   function viewProfile() {
     var p = A.getProfile();
     var av = h("div", { class: "acct-avatar" }); setAvatar(av, p.avatar_url, p);
+    function openCreator() { if (window.ESAvatarCreator) window.ESAvatarCreator.open({ onSaved: function () { tmp = {}; go("profile"); } }); }
     function stat(icon, val, label) {
       return h("div", { class: "stat-card" }, h("span", null, icon), h("strong", null, String(val || 0)), h("small", null, label));
     }
@@ -269,6 +271,7 @@
         stat("⭐", p.points, t("points")), stat("🪙", p.coins, t("coins")),
         stat("🏆", p.wins_count, t("wins")), stat("🧩", p.puzzles_created, t("created"))),
       msg,
+      window.ESAvatarCreator ? h("button", { class: "soft-btn full-btn", type: "button", onclick: openCreator }, "🎨 " + t("createAvatar")) : null,
       h("div", { class: "game-tools" },
         h("button", { class: "soft-btn", type: "button", onclick: function () { tmp = {}; go("edit"); } }, "✏️ " + t("editProfile")),
         h("button", { class: "soft-btn", type: "button", onclick: function () { tmp = {}; go("password"); } }, "🔑 " + t("changePassword")),
@@ -278,46 +281,25 @@
     tmp.msg = "";
   }
 
-  function toAvatar(file) {   // center-crop to 128x128 JPEG data URL (small enough to store in the profile row)
-    return new Promise(function (resolve, reject) {
-      if (!file || !/^image\//.test(file.type) || file.size > 10 * 1024 * 1024) return reject();
-      var url = URL.createObjectURL(file), img = new Image();
-      img.onload = function () {
-        var s = Math.min(img.width, img.height), c = document.createElement("canvas");
-        c.width = c.height = 128;
-        c.getContext("2d").drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 128, 128);
-        URL.revokeObjectURL(url);
-        resolve(c.toDataURL("image/jpeg", 0.8));
-      };
-      img.onerror = function () { URL.revokeObjectURL(url); reject(); };
-      img.src = url;
-    });
-  }
-
   function viewEdit() {
     var p = A.getProfile();
     var out = h("div", { class: "feedback", "aria-live": "polite" });
     var av = h("div", { class: "acct-avatar" }); setAvatar(av, p.avatar_url, p);
-    var file = h("input", { type: "file", accept: "image/*", style: "display:none", onchange: function () {
-      toAvatar(file.files[0]).then(function (d) { tmp.avatar = d; setAvatar(av, d, p); fb(out, ""); },
-        function () { fb(out, t("err_invalid_avatar"), "bad"); });
-      file.value = "";
-    } });
     var name = inp("displayName", "text", "nickname", 40); name.classList.add("acct-text"); name.value = p.display_name || "";
     var bio = h("textarea", { id: "acct-bio", class: "creator-input acct-text", maxlength: 300, rows: 3 }); bio.value = p.bio || "";
     var save = h("button", { class: "primary-btn full-btn", type: "submit" }, t("save"));
     var form = h("form", { class: "creator-card acct-form", onsubmit: function (e) {
       e.preventDefault();
       busy(save, out, function () {
-        return A.updateProfile({ displayName: name.value, bio: bio.value, avatarUrl: tmp.avatar });
+        return A.updateProfile({ displayName: name.value, bio: bio.value });
       }, function () { tmp = { msg: t("saved") }; go("profile"); });
     } },
-      h("div", { class: "acct-row" },
-        h("button", { class: "soft-btn", type: "button", onclick: function () { file.click(); } }, "🖼 " + t("chooseAvatar")),
-        h("button", { class: "soft-btn", type: "button", onclick: function () { tmp.avatar = ""; setAvatar(av, "", p); } }, "✕ " + t("removeAvatar"))),
+      window.ESAvatarCreator ? h("div", { class: "acct-row" }, h("button", { class: "soft-btn", type: "button", onclick: function () {
+        window.ESAvatarCreator.open({ onSaved: function (c) { p = A.getProfile() || p; setAvatar(av, c, p); } });
+      } }, "🎨 " + t("createAvatar"))) : null,
       lab(t("displayName"), "displayName"), name, lab(t("bio"), "bio"), bio, save, out,
       h("button", { class: "acct-link", type: "button", onclick: function () { tmp = {}; go("profile"); } }, t("back")));
-    card.append(h("h2", { class: "acct-title" }, t("editProfile")), av, file, form);
+    card.append(h("h2", { class: "acct-title" }, t("editProfile")), av, form);
   }
 
   function viewPassword() {

@@ -25,7 +25,7 @@
       attemptsOn: "✓ +3 attempts active", unavailable: "Not available for this puzzle (published before the store opened).",
       revealAsk: "Reveal the answer? You will not be able to earn a reward on this puzzle.",
       revealedNote: "Answer revealed. This puzzle will not give you a reward.", yourCoins: "Your coins",
-      kHint: "Hint", kBoost: "Booster", kReveal: "Reveal", kFrame: "Frame", kBadge: "Badge", kTitle: "Title",
+      kHint: "Hint", kBoost: "Booster", kReveal: "Reveal", kFrame: "Frame", kBadge: "Badge", kTitle: "Title", kAvatar: "Avatar part", openCreator: "Open avatar creator",
       frameDesc: "An avatar frame shown on your profile, in the feed and in rankings.",
       badgeDesc: "A badge shown next to your name.", titleDesc: "A title shown under your name on your profile.",
       err_insufficient_coins: "Not enough coins. Solve or publish puzzles to earn more.", err_already_owned: "You already own this item.",
@@ -52,7 +52,7 @@
       attemptsOn: "✓ +3 محاولات مفعّلة", unavailable: "غير متاح لهذا اللغز (نُشر قبل افتتاح المتجر).",
       revealAsk: "إظهار الجواب؟ لن تتمكن من كسب مكافأة على هذا اللغز.",
       revealedNote: "تم إظهار الجواب. هذا اللغز لن يمنحك مكافأة.", yourCoins: "عملاتك",
-      kHint: "تلميح", kBoost: "دعم", kReveal: "إظهار", kFrame: "إطار", kBadge: "شارة", kTitle: "لقب",
+      kHint: "تلميح", kBoost: "دعم", kReveal: "إظهار", kFrame: "إطار", kBadge: "شارة", kTitle: "لقب", kAvatar: "عنصر الصورة", openCreator: "افتح منشئ الصورة",
       frameDesc: "إطار للصورة يظهر في ملفك والصفحة والترتيب.",
       badgeDesc: "شارة تظهر بجانب اسمك.", titleDesc: "لقب يظهر تحت اسمك في ملفك.",
       err_insufficient_coins: "لا تملك عملات كافية. حلّ الألغاز أو انشرها لتكسب المزيد.", err_already_owned: "تملك هذا الغرض بالفعل.",
@@ -79,7 +79,7 @@
       attemptsOn: "✓ +3 tentatives actives", unavailable: "Indisponible pour cette énigme (publiée avant l'ouverture de la boutique).",
       revealAsk: "Révéler la réponse ? Vous ne pourrez pas gagner de récompense sur cette énigme.",
       revealedNote: "Réponse révélée. Cette énigme ne donnera pas de récompense.", yourCoins: "Vos pièces",
-      kHint: "Indice", kBoost: "Boost", kReveal: "Révélation", kFrame: "Cadre", kBadge: "Badge", kTitle: "Titre",
+      kHint: "Indice", kBoost: "Boost", kReveal: "Révélation", kFrame: "Cadre", kBadge: "Badge", kTitle: "Titre", kAvatar: "Élément d'avatar", openCreator: "Ouvrir le créateur d'avatar",
       frameDesc: "Un cadre d'avatar visible sur votre profil, le fil et les classements.",
       badgeDesc: "Un badge affiché à côté de votre nom.", titleDesc: "Un titre affiché sous votre nom sur votre profil.",
       err_insufficient_coins: "Pas assez de pièces. Résolvez ou publiez des énigmes pour en gagner.", err_already_owned: "Vous possédez déjà cet objet.",
@@ -121,13 +121,14 @@
     return s;
   }
   function err(code) { var k = "err_" + code; return S.en[k] ? t(k) : t("err_server"); }
-  function iname(it) { var e = ITEMS[it.slug], l = U.lang(); return e ? (e[l] || e.en)[0] : it.name; }
+  var AV_NAMES = { avatar_bg_galaxy: ["Galaxy Background", "خلفية المجرة", "Fond galaxie"], avatar_bg_sunset: ["Sunset Background", "خلفية الغروب", "Fond coucher de soleil"], avatar_extra_sunglasses: ["Sunglasses", "نظارة شمسية", "Lunettes de soleil"], avatar_extra_monocle: ["Monocle", "نظارة أحادية", "Monocle"], avatar_hat_crown: ["Golden Crown", "تاج ذهبي", "Couronne dorée"], avatar_hat_wizard: ["Wizard Hat", "قبعة الساحر", "Chapeau de magicien"] };
+  function iname(it) { var e = ITEMS[it.slug], l = U.lang(); if (AV_NAMES[it.slug]) return AV_NAMES[it.slug][l === "ar" ? 1 : l === "fr" ? 2 : 0]; return e ? (e[l] || e.en)[0] : it.name; }
   function idesc(it) {
     var e = ITEMS[it.slug], l = U.lang();
     if (e && (e[l] || e.en)[1]) return (e[l] || e.en)[1];
     return it.type === "frame" ? t("frameDesc") : it.type === "badge" ? t("badgeDesc") : it.type === "title" ? t("titleDesc") : (it.description || "");
   }
-  function kindLabel(it) { return t(it.type === "hint" ? "kHint" : it.type === "booster" ? "kBoost" : it.type === "reveal" ? "kReveal" : it.type === "frame" ? "kFrame" : it.type === "badge" ? "kBadge" : "kTitle"); }
+  function kindLabel(it) { return t(it.type === "hint" ? "kHint" : it.type === "booster" ? "kBoost" : it.type === "reveal" ? "kReveal" : it.type === "frame" ? "kFrame" : it.type === "badge" ? "kBadge" : it.type === "avatar" ? "kAvatar" : "kTitle"); }
   function reqId() { try { return crypto.randomUUID(); } catch (e) { return String(Date.now()) + Math.random().toString(16).slice(2); } }
 
   /* ---------------- decorations (used by feed, profiles, rankings) ---------------- */
@@ -205,7 +206,9 @@
   function itemCard(it, mode) {
     var actions = [];
     var stock = it.stackable ? h("small", { class: "st-stock" }, t("inStock", { n: it.quantity })) : null;
-    if (mode === "shop") {
+    if (it.type === "avatar" && it.owned) {
+      actions.push(h("button", { class: "soft-btn", type: "button", onclick: function () { closeM(); if (window.ESAvatarCreator) window.ESAvatarCreator.open(); } }, "🎨 " + t("openCreator")));
+    } else if (mode === "shop") {
       if (it.stackable) actions.push(h("button", { class: "primary-btn st-buy", type: "button", onclick: function () { doBuy(it); } }, t("buy") + " · " + it.price + " 🪙"));
       else if (it.owned) actions.push(isEquipped(it)
         ? h("button", { class: "soft-btn", type: "button", onclick: function () { doEquip(it, false); } }, t("equipped") + " · " + t("unequip"))

@@ -1,0 +1,16 @@
+/* Emoji Secret - Stage 6 avatar creator. New classes only (av-*); the circles that hold avatars already exist. */
+.cm-av svg,.acct-avatar svg,.acct-mini svg{width:100%;height:100%;display:block}
+.av-body{display:grid;gap:12px}
+.av-preview{width:128px;height:128px;border-radius:50%;overflow:hidden;margin:0 auto;box-shadow:0 0 0 3px #a78bfa66,0 10px 30px #0006}
+.av-preview svg{width:100%;height:100%;display:block}
+.av-tabs{margin:0}
+.av-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.av-opt{position:relative;aspect-ratio:1;padding:4px;border-radius:16px;border:1px solid #34264e;background:#1b1430;cursor:pointer;display:grid;place-items:center}
+.av-opt.on{border-color:#a78bfa;box-shadow:0 0 0 2px #a78bfa66}
+.av-opt:active{transform:scale(.97)}
+.av-thumb{display:block;width:100%;height:100%;border-radius:50%;overflow:hidden}
+.av-thumb svg{width:100%;height:100%;display:block}
+.av-opt.locked .av-thumb{filter:saturate(.5) brightness(.7)}
+.av-lock{position:absolute;left:3px;right:3px;bottom:3px;font-size:10px;font-weight:700;text-align:center;background:#000b;color:#fff;border-radius:8px;padding:2px 0}
+.av-tools{margin:0}
+@media(max-width:380px){.av-grid{grid-template-columns:repeat(3,1fr)}}
